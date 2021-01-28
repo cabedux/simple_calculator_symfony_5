@@ -23,10 +23,10 @@ class CalculatorController extends AbstractController
     public function resolveExpression(Request $request, OperationHandler $operationHandler):JsonResponse
     {
         $expression = new OperationRequest($request->request->get('expression'));
-        $result = $operationHandler->handle($expression);
-        
+        $result = $operationHandler->handle($expression)->getResult();
+
         return $this->json([
-            'result' => $result->getResult()
+            'result' => $result
         ]);
 
     }
