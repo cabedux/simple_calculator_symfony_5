@@ -3,6 +3,7 @@ namespace Calculator\Operation\Application;
 
 use Calculator\Operation\Application\OperationRequest;
 use Calculator\Operation\Application\OperationResponse;
+use Calculator\Operation\Domain\Expression;
 
 class OperationHandler{
 
@@ -11,19 +12,36 @@ class OperationHandler{
     }
 
     public function handle(OperationRequest $operation): OperationResponse {
-
-        //@TODO: Logic to resolve expression
-
-        $result = $this->getResult($operation->getExpression(),$this->getOperator($operation->getExpression()));
-        
-        return new OperationResponse($result);
+      
+        return new OperationResponse($this->getResult($this->getExpression($operation)));
     }
 
-  /**
-    * Obtener el simbolo matematico de operacion
+    /**
+     * Transform string to object Expression
+     * @param OperationRequest
+     * @return Expression
+     */
+    private function getExpression(OperationRequest $operation): Expression{
+
+        $negative = -1;
+        $operator = $this->getOperator($operation->getExpression());
+        $arrayExpression = explode($operator, $operation->getExpression());
+                
+        if(substr($operation->getExpression(), 0, 1) === "-" && $operator === "-"){
+            $arrayExpression[0] = $arrayExpression[1] * $negative;
+            $arrayExpression[1] = $arrayExpression[2];
+        }
+
+        return new Expression( $operator, $arrayExpression[0], $arrayExpression[1]);
+    }
+
+    /**
+    * Get type of operator
+    * @param string
+    * @return string
     **/
     private function getOperator($expression){
-        $operator = "-";//Suponemos que el operador sera "-"
+        $operator = "-";//Default negative operator
         for($i = 0; $i < strlen($expression) && $operator == "-"; $i++){
             if(!is_numeric($expression[$i]) && $expression[$i] !="-"){
                 $operator = $expression[$i];
@@ -33,37 +51,32 @@ class OperationHandler{
     }
 
     /**
-     * Dado el string y el operador, calcula el resultado de la operación
+     * Get result of operation
+     * @param Expression
+     * @return integer
      **/
-    private function getResult($expression, $operator){
-        $negative = -1;
-        $result = "E";
-        $arrayExpression = explode($operator, $expression);
-        switch($operator){
+    private function getResult($expression){
+        $result = "E";//Default value error
+        switch($expression->getOperator()){
             case '+':
-                $result = intval($arrayExpression[0]) + 
-                    intval($arrayExpression[1]);
+                $result = $expression->getFirstNumber() + 
+                          $expression->getSecondNumber();
                 break;
 
             case '-':
-                if(substr($expression, 0, 1) === "-"){
-                    $result = (intval($arrayExpression[1]) * $negative) - 
-                        intval($arrayExpression[2]);
-                }
-                else{
-                    $result = intval($arrayExpression[0]) - 
-                        intval($arrayExpression[1]);
-                }
+                $result = $expression->getFirstNumber() - 
+                          $expression->getSecondNumber();
                 break;
 
             case '*':
-                $result = intval($arrayExpression[0]) * 
-                    intval($arrayExpression[1]);
+                $result = $expression->getFirstNumber() * 
+                          $expression->getSecondNumber();
                 break;
+
             case '/':                
-                if($arrayExpression[1] != "0"){//Avoid division by zero
-                    $result = intval($arrayExpression[0]) / 
-                        intval($arrayExpression[1]);
+                if($expression->getSecondNumber() != "0"){//Avoid division by zero
+                    $result = $expression->getFirstNumber() / 
+                    $expression->getSecondNumber();
                 }
                 break;
         }
