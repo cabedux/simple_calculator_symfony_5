@@ -26,7 +26,7 @@ class OperationHandlerTest extends TestCase{
     /**
      * @test
      */
-    public function sendPlusExpressionGetResultTest(){
+    public function sendAddExpressionGetResultTest(){
         $expression = new OperationRequest('3+3');
         $result = $this->handler->handle($expression);
 
@@ -51,6 +51,38 @@ class OperationHandlerTest extends TestCase{
         $result = $this->handler->handle($expression);
 
         $this->assertEquals($result->getResult(), '-13');
+    }
+
+    
+    /**
+     * @test
+     */
+    public function sendmultiplicationExpressionGetResultTest(){
+        $expression = new OperationRequest('10*10');
+        $result = $this->handler->handle($expression);
+
+        $this->assertEquals($result->getResult(), '100');
+    }
+
+    
+    /**
+     * @test
+     */
+    public function sendDivisionExpressionGetResultTest(){
+        $expression = new OperationRequest('100/2');
+        $result = $this->handler->handle($expression);
+
+        $this->assertEquals($result->getResult(), '50');
+    }
+
+    /**
+     * @test
+     */
+    public function sendDivisionByZeroExpressionGetResultTest(){
+        $expression = new OperationRequest('10/0');
+        $result = $this->handler->handle($expression);
+
+        $this->assertEquals($result->getResult(), 'E');
     }
 
 }

@@ -37,13 +37,14 @@ class OperationHandler{
      **/
     private function getResult($expression, $operator){
         $negative = -1;
-        $result = "";
+        $result = "E";
         $arrayExpression = explode($operator, $expression);
         switch($operator){
             case '+':
                 $result = intval($arrayExpression[0]) + 
                     intval($arrayExpression[1]);
                 break;
+
             case '-':
                 if(substr($expression, 0, 1) === "-"){
                     $result = (intval($arrayExpression[1]) * $negative) - 
@@ -54,8 +55,17 @@ class OperationHandler{
                         intval($arrayExpression[1]);
                 }
                 break;
-            default:
-                $result = $expression;
+
+            case '*':
+                $result = intval($arrayExpression[0]) * 
+                    intval($arrayExpression[1]);
+                break;
+            case '/':                
+                if($arrayExpression[1] != "0"){//Avoid division by zero
+                    $result = intval($arrayExpression[0]) / 
+                        intval($arrayExpression[1]);
+                }
+                break;
         }
 
         return $result;
