@@ -3,9 +3,12 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        {% block stylesheets %}
+        <link rel="stylesheet" href="./css/style.css">{% endblock %}
 
-        {% block javascripts %}{% endblock %}
+        {% block javascripts %}
+        <script type="text/javascript"  src="./js/calculator.js" charset="UTF-8"></script>
+        {% endblock %}
     </head>
     <body>
         {% block body %}{% endblock %}

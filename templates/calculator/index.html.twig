@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Simple Calculator{% endblock %}
+
+{% block body %}
+	<header>
+		<h1> Simple Calculator</h1>
+	</header>
+	<main id="container">
+		<section id="calculator">	
+			<input type=text id="pantalla" value="{{result}}" disabled/>
+			<input type=button value="1" onclick="addScreen(value);" />
+			<input type=button value="2" onclick="addScreen(value);" />
+			<input type=button value="3" onclick="addScreen(value);" />
+			<input type=button value="+" onclick="addScreen(value);" />
+			<input type=button value="4" onclick="addScreen(value);" />
+			<input type=button value="5" onclick="addScreen(value);" />
+			<input type=button value="6" onclick="addScreen(value);" />
+			<input type=button value="-" onclick="addScreen(value);" />
+			<input type=button value="7" onclick="addScreen(value);" />
+			<input type=button value="8" onclick="addScreen(value);" />
+			<input type=button value="9" onclick="addScreen(value);" />
+			<input type=button value="*" onclick="addScreen(value);" />
+			<input type=button value="0" onclick="addScreen(value);" />
+			<input type=button value="C" onclick="deleteScreen();" />
+			<input type=button value="=" onclick="readScreen();" />
+			<input type=button value="/" onclick="addScreen(value);" />
+		</section>	
+	</main>
+	<footer>
+		<p>By Sergio Cabedo </p>
+	</footer>
+{% endblock %}
