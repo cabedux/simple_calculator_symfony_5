@@ -1,4 +1,3 @@
-
 /** 
 * Add character to input screen
 **/
@@ -17,14 +16,12 @@ function deleteScreen(){
  * Revolve expression
  */
 function readScreen(){
-	//Valor del input
+	//input value
 	let expression = document.getElementById("pantalla").value;
-	console.log(expression);
 
 	var xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
-			console.log(JSON.parse(xhr.response).result);
 			document.getElementById("pantalla").value = JSON.parse(xhr.response).result;
         }
     };

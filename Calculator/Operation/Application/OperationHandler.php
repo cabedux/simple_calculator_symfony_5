@@ -4,16 +4,22 @@ namespace Calculator\Operation\Application;
 use Calculator\Operation\Application\OperationRequest;
 use Calculator\Operation\Application\OperationResponse;
 use Calculator\Operation\Domain\Expression;
+use Calculator\Operation\Domain\Constant;
 
 class OperationHandler{
 
-    public function __construct(){
+    /**
+     * @var Constant
+     */
+    private $const;
 
+    public function __construct(Constant $const){
+        $this->const = $const;
     }
 
     public function handle(OperationRequest $operation): OperationResponse {
 
-        $expression = 'E';
+        $expression = $this->const::ERROR;
         if($this->isNoOperator($operation)){
             $expression = $operation->getExpression();
         }
@@ -31,12 +37,11 @@ class OperationHandler{
      */
     private function getExpression(OperationRequest $operation): Expression{
 
-        $negative = -1;
         $operator = $this->getOperator($operation->getExpression());
         $arrayExpression = explode($operator, $operation->getExpression());
                 
-        if(substr($operation->getExpression(), 0, 1) === "-" && $operator === "-"){
-            $arrayExpression[0] = $arrayExpression[1] * $negative;
+        if(substr($operation->getExpression(), 0, 1) === $this->const::SUBTRACT && $operator === $this->const::SUBTRACT){
+            $arrayExpression[0] = $arrayExpression[1] * $this->const::NEGATIVE;
             $arrayExpression[1] = $arrayExpression[2];
         }
 
@@ -50,8 +55,8 @@ class OperationHandler{
     **/
     private function getOperator($expression){
         $operator = "-";//Default negative operator
-        for($i = 0; $i < strlen($expression) && $operator == "-"; $i++){
-            if(!is_numeric($expression[$i]) && $expression[$i] !="-"){
+        for($i = 0; $i < strlen($expression) && $operator == $this->const::SUBTRACT; $i++){
+            if(!is_numeric($expression[$i]) && $expression[$i] != $this->const::SUBTRACT){
                 $operator = $expression[$i];
             }
         }
@@ -64,24 +69,24 @@ class OperationHandler{
      * @return integer
      **/
     private function getResult($expression){
-        $result = "E";//Default value error
+        $result = $this->const::ERROR;//Default value error
         switch($expression->getOperator()){
-            case '+':
+            case $this->const::ADD:
                 $result = $expression->getFirstNumber() + 
                           $expression->getSecondNumber();
                 break;
 
-            case '-':
+            case $this->const::SUBTRACT:
                 $result = $expression->getFirstNumber() - 
                           $expression->getSecondNumber();
                 break;
 
-            case '*':
+            case $this->const::MULTIPLY:
                 $result = $expression->getFirstNumber() * 
                           $expression->getSecondNumber();
                 break;
 
-            case '/':                
+            case $this->const::DIVISION:                
                 if($expression->getSecondNumber() != "0"){//Avoid division by zero
                     $result = $expression->getFirstNumber() / 
                     $expression->getSecondNumber();
@@ -103,9 +108,9 @@ class OperationHandler{
         //Check expression if start (operator != "-") or 
         // end (simbolo = (+,-,*,/))
         if(!is_numeric($expression[strlen($expression)-1]) || 
-                substr($expression, 0, 1) === "+" || 
-                substr($expression, 0, 1) === "*" ||
-                substr($expression, 0, 1) === "/"){//
+                substr($expression, 0, 1) === $this->const::ADD || 
+                substr($expression, 0, 1) === $this->const::MULTIPLY ||
+                substr($expression, 0, 1) === $this->const::DIVISION){//
             $result = true;
         }	
         else{//check pair of values.
@@ -140,7 +145,7 @@ class OperationHandler{
         for($i = 0; $i < strlen($expression)-1 && $result == false; $i++){
             if(!is_numeric($expression[$i]) && !is_numeric($expression[$i+1])){
                 //if they are other than + -, * -, / -
-                if($expression[$i] == "-" || $expression[$i+1] != "-"){
+                if($expression[$i] == $this->const::SUBTRACT || $expression[$i+1] != $this->const::SUBTRACT){
                     $result = true;
                 }
             }

@@ -5,12 +5,13 @@ namespace App\tests\Calculator\Operation\Application;
 use PHPUnit\Framework\TestCase;
 use Calculator\Operation\Application\OperationHandler;
 use Calculator\Operation\Application\OperationRequest;
+use Calculator\Operation\Domain\Constant;
 class OperationHandlerTest extends TestCase{
 
     private $handler;
 
     public function setUp(): void{
-        $this->handler = new OperationHandler();
+        $this->handler = new OperationHandler(new Constant());
     }
 
     /**
