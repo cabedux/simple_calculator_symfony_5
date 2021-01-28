@@ -12,8 +12,16 @@ class OperationHandler{
     }
 
     public function handle(OperationRequest $operation): OperationResponse {
-      
-        return new OperationResponse($this->getResult($this->getExpression($operation)));
+
+        $expression = 'E';
+        if($this->isNoOperator($operation)){
+            $expression = $operation->getExpression();
+        }
+        else if(!$this->isIncorrectSentence($operation)){
+            $expression = $this->getResult($this->getExpression($operation));
+        }
+
+        return new OperationResponse($expression);
     }
 
     /**
@@ -82,5 +90,61 @@ class OperationHandler{
         }
 
         return $result;
-    }  
+    } 
+    
+    /**
+     * Check is it's a correct expression
+     * @param Expression
+     * @return bool
+     **/
+    private function isIncorrectSentence($operation): bool{
+        $result = false;
+        $expression = $operation->getExpression();
+        //Check expression if start (operator != "-") or 
+        // end (simbolo = (+,-,*,/))
+        if(!is_numeric($expression[strlen($expression)-1]) || 
+                substr($expression, 0, 1) === "+" || 
+                substr($expression, 0, 1) === "*" ||
+                substr($expression, 0, 1) === "/"){//
+            $result = true;
+        }	
+        else{//check pair of values.
+            $result = $this->comparePairValue($expression);
+        }
+        return $result;
+    }
+
+    /**
+     * Check if the expression is not a operator
+     * @param Expression
+     * @return bool
+     **/
+    private function isNoOperator($operation): bool{
+        $operator = true;
+        $expression = $operation->getExpression();
+        for($i = 1; $i < strlen($expression) && $operator == true; $i++){
+            if(!is_numeric($expression[$i])){
+                $operator = false;
+            }
+        }
+        return $operator;
+    }
+    
+    /**
+     * Compare pairs of values that are math symbols
+     * @param Expression
+     * @return bool
+     **/
+    private function comparePairValue($expression): bool{
+        $result = false;
+        for($i = 0; $i < strlen($expression)-1 && $result == false; $i++){
+            if(!is_numeric($expression[$i]) && !is_numeric($expression[$i+1])){
+                //if they are other than + -, * -, / -
+                if($expression[$i] == "-" || $expression[$i+1] != "-"){
+                    $result = true;
+                }
+            }
+        }
+        return $result;
+    }
 }

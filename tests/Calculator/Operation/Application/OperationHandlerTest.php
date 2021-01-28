@@ -85,4 +85,54 @@ class OperationHandlerTest extends TestCase{
         $this->assertEquals($result->getResult(), 'E');
     }
 
+    /**
+     * @test
+     */
+    public function sendErrorExpressionGetResultTest(){
+        $expression = new OperationRequest('*10+/0');
+        $result = $this->handler->handle($expression);
+
+        $this->assertEquals($result->getResult(), 'E');
+    }
+
+    /**
+     * @test
+     */
+    public function sendOtherErrorExpressionGetResultTest(){
+        $expression = new OperationRequest('-10**20');
+        $result = $this->handler->handle($expression);
+
+        $this->assertEquals($result->getResult(), 'E');
+    }
+
+    /**
+     * @test
+     */
+    public function sendOtherErrorExpressionwithOperatorToEndGetResultTest(){
+        $expression = new OperationRequest('/10*25+');
+        $result = $this->handler->handle($expression);
+
+        $this->assertEquals($result->getResult(), 'E');
+    }
+
+    /**
+     * @test
+     */
+    public function sendExpressionwithOutOperatorGetResultTest(){
+        $expression = new OperationRequest('1020');
+        $result = $this->handler->handle($expression);
+
+        $this->assertEquals($result->getResult(), '1020');
+    }
+
+    /**
+     * @test
+     */
+    public function sendExpressionwithConsecutiveOperatorGetResultTest(){
+        $expression = new OperationRequest('-10/-20');
+        $result = $this->handler->handle($expression);
+
+        $this->assertEquals($result->getResult(), '0.5');
+    }
+
 }
